@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+/* app/globals.css */
+
+.magic-card {
+  position: relative;
+  background: #1c1c1e; /* Màu nền gốc của Card */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  /* Các biến này sẽ được update bằng JS */
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 400px;
+  --glow-color: 132, 0, 255; /* Màu mặc định */
+}
+
+/* Lớp phủ tạo hiệu ứng viền sáng */
+.magic-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px; /* Độ dày của viền sáng */
+  
+  /* Tạo gradient cầu vồng đi theo chuột */
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 1)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.2)) 50%,
+    transparent 70%
+  );
+  
+  border-radius: inherit;
+  
+  /* Kỹ thuật Masking để chỉ hiện viền */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  
+  pointer-events: none;
+  opacity: 0; /* Mặc định ẩn, JS sẽ bật lên */
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+/* Khi có chuột vào vùng Section thì viền hiện lên */
+.magic-section:hover .magic-card::after {
+  opacity: 1;
+}
+
+/* Hiệu ứng hạt particles bên trong (Optional) */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+}
+/* --- CUSTOM SCROLLBAR (Thanh cuộn siêu mỏng) --- */
+
+/* 1. Thiết lập độ rộng */
+::-webkit-scrollbar {
+  width: 6px;  /* Chiều rộng thanh dọc */
+  height: 6px; /* Chiều cao thanh ngang */
+}
+
+/* 2. Phần rãnh (Track) - Để trong suốt cho đẹp */
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+/* 3. Phần tay cầm (Thumb) - Màu xám nhạt bo tròn */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Màu trắng mờ 20% */
+  border-radius: 10px; /* Bo tròn mềm mại */
+}
+
+/* 4. Hiệu ứng khi di chuột vào thanh cuộn */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4); /* Sáng lên một chút */
+}
+
+/* 5. Ẩn thanh cuộn thừa cho Firefox (Optional) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+/* --- SPOTLIGHT CARD EFFECT --- */
+.card-spotlight {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Sửa lại chút cho hợp nền tối */
+  background-color: rgba(255, 255, 255, 0.05); /* Mờ mờ giống kính */
+  padding: 2rem;
+  overflow: hidden;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(255, 255, 255, 0.05);
+}
+
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.card-spotlight:hover::before,
+.card-spotlight:focus-within::before {
+  opacity: 1;
+}

@@ -1,0 +1,16 @@
+.text-type {
+  display: inline-block;
+  white-space: pre-wrap;
+}
+
+.text-type__cursor {
+  margin-left: 0.25rem;
+  display: inline-block;
+  opacity: 1;
+  color: #3b82f6; /* Màu xanh dương cho con trỏ */
+  font-weight: bold;
+}
+
+.text-type__cursor--hidden {
+  display: none;
+}
