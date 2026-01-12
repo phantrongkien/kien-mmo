@@ -1,25 +1,26 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Copy, X, Zap, ArrowLeft } from 'lucide-react'; // Đã thêm ArrowLeft
+import { Copy, X, Zap, ArrowLeft } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MagicContainer, MagicCard } from '@/components/ui/MagicCard';
 import SpotlightCard from '@/components/ui/SpotlightCard';
-import TextType from '@/components/ui/TextType'; // Giữ lại hiệu ứng gõ chữ
+import TextType from '@/components/ui/TextType';
 
-// Dữ liệu Coin
+// Dữ liệu Coin (Đã cập nhật SOL và ETC)
 const COINS = [
   { id: 'btc', symbol: 'BTC', network: 'Bitcoin', name: 'Bitcoin', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', address: 'bc1qx0knad70naqhhhkphrylxa6y5usmvfkqmh84z3', rgb: '247, 147, 26' },
   { id: 'eth', symbol: 'ETH', network: 'Ethereum', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '98, 126, 234' },
   { id: 'bnb', symbol: 'BNB', network: 'BSC', name: 'BNB Chain', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '243, 186, 47' },
+  { id: 'sol', symbol: 'SOL', network: 'Solana', name: 'Solana', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png', address: '9kexzJUm3ZRDvKw3K18V5zw6Raemu7NjfE4uiHzijEJd', rgb: '153, 69, 255' }, // Đã thêm SOL
+  { id: 'etc', symbol: 'ETC', network: 'BEP20', name: 'Ethereum Classic', icon: 'https://cryptologos.cc/logos/ethereum-classic-etc-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '63, 167, 45' }, // Đã thêm ETC
+  { id: 'usdt', symbol: 'USDT', network: 'BEP20', name: 'Tether USD', icon: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '38, 161, 123' },
   { id: 'doge', symbol: 'DOGE', network: 'Dogecoin', name: 'Dogecoin', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', address: 'DBwkfH9gsHPfb8tvAY3JWxVx56uA7riNS7', rgb: '194, 166, 51' },
   { id: 'trx', symbol: 'TRX', network: 'TRC20', name: 'Tron', icon: 'https://cryptologos.cc/logos/tron-trx-logo.png', address: 'TYao9qytWXWKwDjv1KPi71h5KYAQGiQhC1', rgb: '255, 0, 0' },
   { id: 'ltc', symbol: 'LTC', network: 'Litecoin', name: 'Litecoin', icon: 'https://cryptologos.cc/logos/litecoin-ltc-logo.png', address: 'ltc1qkdfz6awelxenp8lc8v7hr2k8m4xamawmk2sgzg', rgb: '52, 93, 157' },
-  { id: 'usdt', symbol: 'USDT', network: 'BEP20', name: 'Tether USD', icon: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '38, 161, 123' },
 ];
 
-// Thêm prop onBack để nhận lệnh quay lại từ Dashboard
 export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
   const [selectedCoin, setSelectedCoin] = useState<any>(null);
 
@@ -31,7 +32,7 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
   return (
     <div className="min-h-screen bg-[#0f0f11] text-white font-sans flex items-center justify-center p-4 relative overflow-hidden animate-in fade-in zoom-in duration-300">
       
-      {/* Nút Quay lại Dashboard (Chỉ hiện khi có prop onBack) */}
+      {/* Nút Quay lại Dashboard */}
       {onBack && (
         <button 
           onClick={onBack}
@@ -48,7 +49,7 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
 
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 z-10 mt-10 md:mt-0">
         
-        {/* Cột Trái: Giữ nguyên TextType và Kien Community */}
+        {/* Cột Trái */}
         <div className="flex flex-col justify-center space-y-6 text-center md:text-left">
            <div>
               <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs font-bold text-green-400 mb-4 backdrop-blur-sm">
@@ -59,7 +60,6 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
                 Kien Community
               </h1>
               
-              {/* Hiệu ứng gõ chữ (Đã khôi phục) */}
               <div className="text-gray-400 text-lg min-h-[30px]">
                  <TextType 
                    text={[
@@ -86,7 +86,7 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
            </SpotlightCard>
         </div>
 
-        {/* Cột Phải */}
+        {/* Cột Phải - Danh sách Coin */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl h-[500px] overflow-y-auto custom-scrollbar">
           <h3 className="text-gray-400 text-xs font-bold uppercase mb-4 tracking-wider">Chọn cổng thanh toán</h3>
           
@@ -100,7 +100,7 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
               >
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                     <img src={coin.icon} alt={coin.symbol} className="w-10 h-10 rounded-full bg-white/10 p-0.5" />
+                      <img src={coin.icon} alt={coin.symbol} className="w-10 h-10 rounded-full bg-white/10 p-0.5" />
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="font-bold text-base text-white group-hover:text-white transition-colors">{coin.symbol}</span>
