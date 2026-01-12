@@ -1,0 +1,12 @@
+[33mbac371c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Remove css file and use tailwind
+[33m80a2a8b[m chore: force rebuild
+[33mc089b76[m chore: force zeabur rebuild
+[33m52d3d7b[m fix: clean globals.css for tailwind + zeabur
+[33m65d35c1[m fix: add tailwind deps
+[33mdf47345[m Add postcss config and fix tailwind imports
+[33ma261df6[m Move all build tools to dependencies for Zeabur
+[33maf1c8e3[m Move tailwind to dependencies for Zeabur build
+[33mcf52181[m Fix dependency conflict by updating lockfile
+[33ma3b2784[m Fix duplicate package.json
+[33m5673fcd[m Add config files for Zeabur deployment
+[33m14a4970[m Upload source code Kien Community Tools
