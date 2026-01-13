@@ -1,9 +1,9 @@
-// File: components/tools/TwoFATool.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { Shield, Key, Trash2, Copy, CheckCircle, Clock, Info, Lock, AlertCircle } from 'lucide-react';
 import * as OTPAuth from 'otpauth';
+import DecryptedText from '@/components/ui/DecryptedText';
 
 interface Account {
   id: string;
@@ -44,8 +44,6 @@ export default function TwoFATool() {
 
     const lines = input.split('\n').filter(line => line.trim() !== '');
     const newAccounts: Account[] = lines.map((line, index) => {
-      // Xử lý format đầu vào
-      // Hỗ trợ: "SecretKey" hoặc "Label|SecretKey" hoặc "Service|Label|SecretKey"
       const parts = line.split('|');
       let label = `Account ${index + 1}`;
       let secret = line.trim();
@@ -58,7 +56,6 @@ export default function TwoFATool() {
          secret = parts[2].trim();
       }
 
-      // Kiểm tra xem secret có hợp lệ không (thử tạo mã lần đầu)
       const initialCode = generateCode(secret);
       const isValid = initialCode !== "ERROR";
 
@@ -86,16 +83,12 @@ export default function TwoFATool() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // --- EFFECT: ĐỒNG HỘ ĐẾM NGƯỢC & CẬP NHẬT MÃ ---
   useEffect(() => {
     const timer = setInterval(() => {
-      // Tính toán giây hiện tại (0-30)
       const seconds = new Date().getSeconds();
       const currentProgress = 30 - (seconds % 30);
       setProgress(currentProgress);
 
-      // Cập nhật lại toàn bộ mã cho các tài khoản
-      // (Mỗi giây đều tính lại để đảm bảo không bị lệch nhịp so với server Google)
       setAccounts(prevAccounts => 
         prevAccounts.map(acc => ({
           ...acc,
@@ -121,16 +114,30 @@ export default function TwoFATool() {
           
           {/* Header */}
           <div>
-             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-4">
-                <Shield className="w-3 h-3" />
-                SECURE AUTH
-             </div>
-             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">
-               2FA <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Authenticator</span>
-             </h2>
-             <p className="text-gray-400 text-lg">
-               Lấy mã bảo mật 2 lớp (TOTP) chuẩn xác theo thời gian thực.
-             </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-4">
+                 <Shield className="w-3 h-3" />
+                 SECURE AUTH
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight flex items-center flex-wrap gap-2">
+                <span>2FA</span>
+                <DecryptedText
+                  text="Authenticator"
+                  animateOn="view"
+                  revealDirection="start" 
+                  sequential={true} // <--- QUAN TRỌNG: Thêm dòng này để chạy từng chữ
+                  speed={50} // Tốc độ chạy mỗi chữ (ms)
+                  maxIterations={10}
+                  characters="ABCD1234!?"
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500"
+                  parentClassName="inline-block"
+                  encryptedClassName="text-gray-600"
+                />
+              </h2>
+
+              <p className="text-gray-400 text-lg">
+                Lấy mã bảo mật 2 lớp (TOTP) chuẩn xác theo thời gian thực.
+              </p>
           </div>
 
           {/* Input Area */}
@@ -165,15 +172,15 @@ export default function TwoFATool() {
 
           {/* Instructions */}
           <div className="bg-blue-900/10 border border-blue-500/10 p-4 rounded-xl flex gap-3">
-             <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-             <div className="text-sm text-gray-400 space-y-1">
-                <p className="text-blue-300 font-semibold">Lưu ý quan trọng:</p>
-                <ul className="list-disc pl-4 space-y-1 opacity-80">
-                   <li>Secret Key thường là chuỗi ký tự viết hoa (Base32), ví dụ: <code>JBSWY3...</code></li>
-                   <li>Mã code được tạo ra <strong>giống hệt</strong> mã trên điện thoại của bạn.</li>
-                   <li>Hệ thống <strong>không lưu</strong> secret key của bạn, an toàn tuyệt đối.</li>
-                </ul>
-             </div>
+              <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+              <div className="text-sm text-gray-400 space-y-1">
+                 <p className="text-blue-300 font-semibold">Lưu ý quan trọng:</p>
+                 <ul className="list-disc pl-4 space-y-1 opacity-80">
+                    <li>Secret Key thường là chuỗi ký tự viết hoa (Base32), ví dụ: <code>JBSWY3...</code></li>
+                    <li>Mã code được tạo ra <strong>giống hệt</strong> mã trên điện thoại của bạn.</li>
+                    <li>Hệ thống <strong>không lưu</strong> secret key của bạn, an toàn tuyệt đối.</li>
+                 </ul>
+              </div>
           </div>
         </div>
 
@@ -187,7 +194,6 @@ export default function TwoFATool() {
                       <Clock className="w-4 h-4 text-blue-500" />
                       Live Codes ({progress}s)
                    </h3>
-                   {/* Thanh progress bar mini */}
                    <div className="w-20 h-1.5 bg-gray-800 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all duration-1000 ease-linear ${progress < 5 ? 'bg-red-500' : 'bg-blue-500'}`} 
@@ -230,7 +236,6 @@ export default function TwoFATool() {
                                 </div>
                             )}
 
-                            {/* Progress bar background overlay (chỉ hiện khi hợp lệ) */}
                             {acc.isValid && (
                                 <div 
                                    className="absolute bottom-0 left-0 h-0.5 bg-blue-500/50 transition-all duration-1000 ease-linear"
@@ -242,7 +247,6 @@ export default function TwoFATool() {
                    )}
                 </div>
 
-                {/* Footer */}
                 <div className="p-3 border-t border-[#222] bg-[#0f0f0f] text-center">
                     <p className="text-[10px] text-gray-600">
                        Hệ thống tự động đồng bộ thời gian thực.

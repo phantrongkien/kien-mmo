@@ -7,14 +7,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { MagicContainer, MagicCard } from '@/components/ui/MagicCard';
 import SpotlightCard from '@/components/ui/SpotlightCard';
 import TextType from '@/components/ui/TextType';
+import GradientText from '@/components/ui/GradientText'; // Import Gradient Text
+import CountUp from '@/components/ui/CountUp'; // Import Count Up
 
-// Dữ liệu Coin (Đã cập nhật SOL và ETC)
+// Dữ liệu Coin
 const COINS = [
   { id: 'btc', symbol: 'BTC', network: 'Bitcoin', name: 'Bitcoin', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', address: 'bc1qx0knad70naqhhhkphrylxa6y5usmvfkqmh84z3', rgb: '247, 147, 26' },
   { id: 'eth', symbol: 'ETH', network: 'Ethereum', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '98, 126, 234' },
   { id: 'bnb', symbol: 'BNB', network: 'BSC', name: 'BNB Chain', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '243, 186, 47' },
-  { id: 'sol', symbol: 'SOL', network: 'Solana', name: 'Solana', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png', address: '9kexzJUm3ZRDvKw3K18V5zw6Raemu7NjfE4uiHzijEJd', rgb: '153, 69, 255' }, // Đã thêm SOL
-  { id: 'etc', symbol: 'ETC', network: 'BEP20', name: 'Ethereum Classic', icon: 'https://cryptologos.cc/logos/ethereum-classic-etc-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '63, 167, 45' }, // Đã thêm ETC
+  { id: 'sol', symbol: 'SOL', network: 'Solana', name: 'Solana', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png', address: '9kexzJUm3ZRDvKw3K18V5zw6Raemu7NjfE4uiHzijEJd', rgb: '153, 69, 255' },
+  { id: 'etc', symbol: 'ETC', network: 'BEP20', name: 'Ethereum Classic', icon: 'https://cryptologos.cc/logos/ethereum-classic-etc-logo.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '63, 167, 45' },
   { id: 'usdt', symbol: 'USDT', network: 'BEP20', name: 'Tether USD', icon: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png', address: '0xF6823fee88abc4686255d5cD340292D500Fd2637', rgb: '38, 161, 123' },
   { id: 'doge', symbol: 'DOGE', network: 'Dogecoin', name: 'Dogecoin', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', address: 'DBwkfH9gsHPfb8tvAY3JWxVx56uA7riNS7', rgb: '194, 166, 51' },
   { id: 'trx', symbol: 'TRX', network: 'TRC20', name: 'Tron', icon: 'https://cryptologos.cc/logos/tron-trx-logo.png', address: 'TYao9qytWXWKwDjv1KPi71h5KYAQGiQhC1', rgb: '255, 0, 0' },
@@ -56,6 +58,8 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 SYSTEM ONLINE
               </div>
+              
+              {/* Giữ nguyên màu gốc (Trắng -> Xám) cho Kien Community */}
               <h1 className="text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500 mb-2">
                 Kien Community
               </h1>
@@ -78,7 +82,30 @@ export default function TrustWalletUI({ onBack }: { onBack?: () => void }) {
            
            <SpotlightCard className="custom-spotlight-card text-center md:text-left" spotlightColor="rgba(0, 229, 255, 0.2)">
               <p className="text-gray-500 text-sm uppercase font-bold tracking-wider mb-2">Tổng quỹ bảo hiểm</p>
-              <h2 className="text-5xl font-extrabold text-white tracking-tighter">$1,337.00</h2>
+              
+              {/* --- ĐÃ SỬA: Hiệu ứng Gradient + Count Up nhưng giữ Font gốc và Màu Bạc/Trắng --- */}
+              <div className="flex justify-center md:justify-start">
+                  <GradientText
+                    // Màu: Trắng -> Xám Nhạt -> Trắng (Để trông giống bản gốc nhưng có hiệu ứng lướt qua)
+                    colors={["#FFFFFF", "#D1D5DB", "#FFFFFF", "#D1D5DB", "#FFFFFF"]}
+                    animationSpeed={3}
+                    showBorder={false}
+                    // Tăng kích thước lên text-7xl để to như ảnh bạn gửi
+                    className="text-7xl font-extrabold tracking-tighter py-2"
+                  >
+                    $
+                    <CountUp
+                      from={0}
+                      to={1337}
+                      separator=","
+                      direction="up"
+                      duration={1.5}
+                      className="count-up-text ml-1"
+                    />
+                  </GradientText>
+              </div>
+              {/* --------------------------------------------------------------------------------- */}
+
               <div className="mt-4 flex items-center justify-center md:justify-start gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 <span className="text-xs text-green-400 font-mono">Secure Vault Active</span>
